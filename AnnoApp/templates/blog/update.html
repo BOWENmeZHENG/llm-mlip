@@ -9,15 +9,15 @@
   <form method="post">
     <label for="title">Title</label>
     <input name="title" id="title"
-      value="{{ request.form['title'] or post['title'] }}">
+      value="{{ request.form['title'] or text['title'] }}">
     <label for="body">Body</label>
-    <textarea name="body" id="body"  required>{{ request.form['body'] or post['body'] }}</textarea>
+    <textarea name="body" id="body"  required>{{ request.form['body'] or text['body'] }}</textarea>
     <label for="annotation">Annotation</label>
-    <textarea name="annotation" id="annotation">{{ request.form['annotation'] or post['annotation'] }}</textarea>
+    <textarea name="annotation" id="annotation">{{ request.form['annotation'] or text['annotation'] }}</textarea>
     <input type="submit" value="Save">
   </form>
   <hr>
-  <form action="{{ url_for('blog.delete', id=post['id']) }}" method="post">
+  <form action="{{ url_for('blog.delete', id=text['id']) }}" method="post">
     <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
   </form>
 {% endblock %}

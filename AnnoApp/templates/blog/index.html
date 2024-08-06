@@ -7,18 +7,18 @@
 
 {% block content %}
 
-  {% for post in posts %}
+  {% for text in texts %}
     <article class="post">
       <header>
         <div>
-          <h1>{{ post['title'] }}</h1>
-          <div class="about">on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+          <h1>{{ text['title'] }}</h1>
+          <div class="about">on {{ text['created'].strftime('%Y-%m-%d') }}</div>
         </div>
-        <a class="action" href="{{ url_for('blog.annotate', id=post['id']) }}">Annotate</a>
-        <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
+        <a class="action" href="{{ url_for('blog.annotate', id=text['id']) }}">Annotate</a>
+        <a class="action" href="{{ url_for('blog.update', id=text['id']) }}">Edit</a>
       </header>
-      <p style='word-wrap: break-word;'>{{ post['body'] }}</p>
-      <p style='word-wrap: break-word;'>{{ post['annotation'] }}</p>
+      <p style='word-wrap: break-word;'>{{ text['body'] }}</p>
+      <p style='word-wrap: break-word;'>{{ text['annotation'] }}</p>
     </article>
     {% if not loop.last %}
       <hr>
