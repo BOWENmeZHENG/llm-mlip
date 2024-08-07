@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}New Entry{% endblock %}</h1>
+  <a class="action" href="{{ url_for('mlip.index') }}">Go Back</a>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="title">Title</label>
+    <input name="title" id="title" value="{{ request.form['title'] }}">
+    <label for="body">Body</label>
+    <textarea name="body" id="body" required>{{ request.form['body'] }}</textarea>
+    <label for="annotation">Annotation</label>
+    <textarea name="annotation" id="annotation">{{ request.form['annotation'] }}</textarea>
+    <input type="submit" value="Save">
+  </form>
+{% endblock %}
