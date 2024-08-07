@@ -1,3 +1,4 @@
+import sys
 import random
 import utils_train as ut
 import net
@@ -15,7 +16,7 @@ SEED = 3242
 MAX_LENGTH = 512
 CLASS_WEIGHTS = [0.3, 1., 1., 1., 0.5, 0.5]
 LEARNING_RATE = 0.0001
-N_EPOCHS = 2
+N_EPOCHS = int(sys.argv[1])
 TRAIN_PCT = 0.9
 DB_PATH = './instance/AnnoApp.sqlite'
 
