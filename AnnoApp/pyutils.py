@@ -4,7 +4,7 @@ def split_para(para):
     return re.findall(r"[\w]+|[-.,\'!=±?%–−;:/\(\)\[\]]", para)
 
 def write_anno(name, text):
-    with open(f'AnnoApp/templates/blog/{name}.html', 'w') as f:
+    with open(f'AnnoApp/templates/mlip/{name}.html', 'w') as f:
         f.write("{% extends 'base.html' %}\n")
         f.write("{% block header %}\n")
         f.write("  <h1>{% block title %}Annotate{% endblock %}</h1>\n")
@@ -69,7 +69,7 @@ def write_anno(name, text):
         f.write("    <button type='button' style='width:200px;margin-top:10px;' onclick='saveAnnotation()'>Generate annotation</button>\n")
         f.write("    <input style='width:700px;margin-top:10px;' type='text' id='show' value=''/>\n")
         f.write("    <button type='button' onclick='copyAnnotation()' style='width:200px;'>Copy annotation</button>\n")
-        f.write("    <a style='margin-top:20px;'class='action' href='{{ url_for(\"blog.update\", id=ID) }}'>Finish</a>\n")
+        f.write("    <a style='margin-top:20px;'class='action' href='{{ url_for(\"mlip.update\", id=ID) }}'>Finish</a>\n")
         
         # ----------------------------
         # Script from here on
