@@ -111,7 +111,7 @@ def seed_everything(seed):
     torch.backends.cudnn.benchmark = True
 
 def inference(text, model, tokenizer, max_length):
-    text_list = ut.split_para(text)
+    text_list = split_para(text)
     token_list = tokenizer.convert_tokens_to_ids(text_list)
     data_test = torch.tensor(token_list + [0] * (max_length - len(token_list)))[None, :]
     att_mask_test = torch.tensor([1] * len(text_list) + [0] * (max_length - len(text_list)))[None, :]
@@ -144,3 +144,29 @@ def show_pred(pred, text_list, n_word_line=15):
                   highlight_textprops=markers, ax=ax)
     plt.show()
 
+def result2data(pred, text_list, classes_inv):
+    body = " ".join(text_list)
+    annotation = {}
+    annotation_list = [(index, classes_inv[i.item()]) for index, i in enumerate(pred) if i.item() > 0]
+    for i in annotation_list:
+        annotation[str(i[0])] = i[1]
+    annotation = str(annotation).replace("'", '"')
+    return body, annotation
+
+def result2data_batch(results, classes_inv):
+    bodies = []
+    annotations = []
+    for result in results:
+        body, annotation = result2data(*result, classes_inv)
+        bodies.append(body)
+        annotations.append(annotation)
+        data = [bodies, annotations]
+    return list(zip(*data))
+
+def insert_data(data, db_path):
+    con = sqlite3.connect(db_path)
+    cur = con.cursor()
+    for d in data:
+        cur.execute("INSERT INTO mlip (body, annotation) VALUES (?, ?)", d)
+    con.commit()
+    con.close()
