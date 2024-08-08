@@ -1,4 +1,4 @@
-# Polymer Information Extraction
+# Large language models for machine learning interatomic potentials
 
 This repo contains code for the paper 'Large language models for machine learning interatomic potentials: A user-centric approach to knowledge extraction from literature'
 
