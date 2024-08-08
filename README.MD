@@ -1,6 +1,6 @@
 # Large language models for machine learning interatomic potentials
 
-This repo contains code for the paper 'Large language models for machine learning interatomic potentials: A user-centric approach to knowledge extraction from literature'
+This repo contains the codes for the paper 'Large language models for machine learning interatomic potentials: A user-centric approach to knowledge extraction from literature'
 
 ## Requirements and Setup
 
@@ -8,7 +8,7 @@ This repo contains code for the paper 'Large language models for machine learnin
 - Pytorch (version 1.12.1)
 - Transformers (version 4.41.2)
 
-You can install all required Python packages using the provided environment.yml file using `conda env create -f environment.yml`
+All required packages can be installed by running `conda env create -f environment.yml`
 
 ## Running the code
 
