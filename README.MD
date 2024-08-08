@@ -12,6 +12,11 @@ You can install all required Python packages using the provided environment.yml 
 
 ## Running the code
 
+The web application AnnoApp can be launched by the following command:
+```bash
+flask --app AnnoApp run
+```
+
 The script for the LLM fine-tuning can be run by using the following command:
 
 ```bash
