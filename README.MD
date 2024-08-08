@@ -1,6 +1,6 @@
 # Large language models for machine learning interatomic potentials
 
-This repo contains the codes for the paper 'Large language models for machine learning interatomic potentials: A user-centric approach to knowledge extraction from literature'
+This repo contains the codes for the paper 'Large language models for machine learning interatomic potentials: A user-centric approach to knowledge extraction from literature'.
 
 ## Requirements and Setup
 
@@ -8,7 +8,7 @@ This repo contains the codes for the paper 'Large language models for machine le
 - Pytorch (version 1.12.1)
 - Transformers (version 4.41.2)
 
-All required packages can be installed by running `conda env create -f environment.yml`
+All required packages can be installed by running `conda env create -f environment.yml`.
 
 ## Running the code
 
@@ -29,7 +29,7 @@ The script for the AI annotator can be run using the following command:
 python inference.py --finetuned_model model_name --model_epoch 6
 ```
 
-The MaterialsBERT language model used as the pre-trained model can be found [here](https://huggingface.co/pranav-s/MaterialsBERT)
+The MaterialsBERT language model used as the pre-trained model can be found [here](https://huggingface.co/pranav-s/MaterialsBERT).
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE.md) file for details.
