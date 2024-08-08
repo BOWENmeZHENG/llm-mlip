@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-import utils_train as ut
+import utils as ut
 import matplotlib.pyplot as plt
 from datetime import date
 import os
@@ -8,7 +8,6 @@ import numpy as np
 import pandas as pd
 import json
 
-# change
 def train(model, tokenizer, record_list_train, record_list_test, classes, 
           batch_size, seed, max_length, class_weights: list, lr, n_epochs,
           plot=True, save_model=True, save_results=True):

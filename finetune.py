@@ -3,12 +3,10 @@ import sys
 import os
 from dataclasses import dataclass, field
 import random
-import utils_train as ut
+import utils as ut
 import net
 from trainer import train
 from transformers import HfArgumentParser, BertForMaskedLM, BertTokenizer
-import matplotlib.pyplot as plt
-from highlight_text import HighlightText
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -134,22 +132,8 @@ def main():
         sample_id = random.randint(0, len(record_list_test) - 1)
         word_list = rec_list[sample_id]['words']
         predictions = pred_all[sample_id, :, :].max(dim=0)[1]
-        colors = ['black', 'red', 'blue', 'green', 'cyan', 'darkorange']
         real_preds = predictions[:len(word_list)]
-        word_list_marked = ['<' + w + '>' for w in word_list]
-        markers = [{"color": colors[i]} for i in real_preds]
-        j = 0
-        for i in range(len(word_list)):
-            if (i + 1) % 15 == 0:
-                word_list_marked.insert(i + j, '\n')
-                j += 1
-        fig, ax = plt.subplots()
-        ax.set_axis_off()
-        HighlightText(x=0., y=1, s='<O>, <MATERIAL>, <MLIP>, <PROPERTY>, <VALUE>, <APPLICATION>',
-                    highlight_textprops=[{"color": c} for c in colors], ax=ax)
-        HighlightText(x=0., y=0.9, s=' '.join(word_list_marked),
-                    highlight_textprops=markers, ax=ax)
-        plt.show()
+        ut.show_pred(real_preds, word_list)
 
 if __name__ == "__main__":
     main()

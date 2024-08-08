@@ -7,6 +7,8 @@ import os
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, f1_score
 import sqlite3
+import matplotlib.pyplot as plt
+from highlight_text import HighlightText
 
 def split_para(para):
     return re.findall(r"[\w]+|[-.,\'!=±?%–−;:/\(\)\[\]]", para)
@@ -108,4 +110,37 @@ def seed_everything(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = True
 
-    
+def inference(text, model, tokenizer, max_length):
+    text_list = ut.split_para(text)
+    token_list = tokenizer.convert_tokens_to_ids(text_list)
+    data_test = torch.tensor(token_list + [0] * (max_length - len(token_list)))[None, :]
+    att_mask_test = torch.tensor([1] * len(text_list) + [0] * (max_length - len(text_list)))[None, :]
+    y_pred_test = model(data_test, attention_mask=att_mask_test)
+    y_pred_test = torch.swapaxes(y_pred_test, 1, 2)
+    pred = y_pred_test.max(dim=1)[1][0][:len(text_list)]
+    return pred, text_list
+
+def inference_batch(texts, model, tokenizer, max_length):
+    results = []
+    for text in texts:
+        pred, text_list = inference(text, model, tokenizer, max_length)
+        results.append((pred, text_list))
+    return results
+
+def show_pred(pred, text_list, n_word_line=15):
+    colors = ['black', 'red', 'blue', 'green', 'cyan', 'darkorange']
+    word_list_marked = ['<' + w + '>' for w in text_list]
+    markers = [{"color": colors[i]} for i in pred]
+    j = 0
+    for i in range(len(text_list)):
+        if (i + 1) % n_word_line == 0:
+            word_list_marked.insert(i + j, '\n')
+            j += 1
+    fig, ax = plt.subplots()
+    ax.set_axis_off()
+    HighlightText(x=0., y=1, s='<O>, <MATERIAL>, <MLIP>, <PROPERTY>, <VALUE>, <APPLICATION>',
+                  highlight_textprops=[{"color": c} for c in colors], ax=ax)
+    HighlightText(x=0., y=0.9, s=' '.join(word_list_marked),
+                  highlight_textprops=markers, ax=ax)
+    plt.show()
+
