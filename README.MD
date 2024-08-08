@@ -5,8 +5,8 @@ This repo contains code for the paper 'Large language models for machine learnin
 ## Requirements and Setup
 
 - Python 3.10
-- Pytorch (version 1.10.0)
-- Transformers (version 4.17.0)
+- Pytorch (version 1.12.1)
+- Transformers (version 4.41.2)
 
 You can install all required Python packages using the provided environment.yml file using `conda env create -f environment.yml`
 
