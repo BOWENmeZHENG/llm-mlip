@@ -9,6 +9,6 @@ dependencies:
   - transformers=4.41.2
   - pytorch=1.12.1
   - sympy=1.12
-  - flask=1.24.3
+  - flask=3.0.3
   - pip:
     - highlight-text=0.2
