@@ -60,7 +60,7 @@ class OtherArguments:
     )
 
 def main():
-    parser = HfArgumentParser((ModelArguments, OtherArguments))
+    parser = HfArgumentParser((ModelArguments, InferenceArguments, OtherArguments))
     model_args, infer_args, other_args = parser.parse_args_into_dataclasses()
     os.makedirs(other_args.output_dir, exist_ok=True)
     logging.basicConfig(
