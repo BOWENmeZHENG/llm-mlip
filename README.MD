@@ -26,7 +26,7 @@ python finetune.py --save_model True --seed 4232 --n_epochs 6
 The script for the AI annotator can be run using the following command:
 
 ```bash
-python inference.py --finetuned_model model_name --model_epoch 6
+python inference.py --finetuned_model model_name --model_epoch 6 --inference_text inference_examples.txt
 ```
 
 The MaterialsBERT language model used as the pre-trained model can be found [here](https://huggingface.co/pranav-s/MaterialsBERT).

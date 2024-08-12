@@ -17,7 +17,7 @@ class ModelArguments:
         metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
     )
     finetuned_model: str = field(
-        default='2024-08-08_b_1_s_4232_l_512_w_(0.3, 1.0, 1.0, 1.0, 0.5, 0.5)_l_0.0001',
+        default=None,
         metadata={"help": "Name of the finetuned model."}
     )
     model_epoch: int = field(
