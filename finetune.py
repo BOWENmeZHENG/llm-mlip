@@ -21,14 +21,14 @@ class ModelArguments:
     )
     database_path: str = field(
         default='./instance/AnnoApp.sqlite',
-        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
+        metadata={"help": "Path to database of annotations"}
     )
 
 @dataclass
 class TrainingArguments:
     output_dir: str = field(
         default='./output',
-        metadata={"help": "The output directory where the model predictions and checkpoints will be written."}
+        metadata={"help": "The output directory for logs."}
     )
     n_epochs: int = field(
         default=3,
@@ -36,11 +36,11 @@ class TrainingArguments:
     )
     classes_weights: tuple = field(
         default=(0.3, 1., 1., 1., 0.5, 0.5),
-        metadata={"help": "Total number of training epochs to perform."}
+        metadata={"help": "weights for each NER class."}
     )
     train_batch_size: int = field(
         default=1,
-        metadata={"help": "Batch size per GPU/TPU core/CPU for training."}
+        metadata={"help": "Batch size for training."}
     )
     max_seq_length: int = field(
         default=512,
@@ -51,34 +51,34 @@ class TrainingArguments:
     )
     learning_rate: float = field(
         default=0.0001,
-        metadata={"help": "Batch size per GPU/TPU core/CPU for training."}
+        metadata={"help": "learning rate for training."}
     )
     training_percentage: float = field(
         default=0.9,
-        metadata={"help": "Batch size per GPU/TPU core/CPU for training."}
+        metadata={"help": "Percentage of total data for training."}
     )
     seed: int = field(
         default=3242,
-        metadata={"help": "Batch size per GPU/TPU core/CPU for training."}
+        metadata={"help": "Random seed."}
     )
 
 @dataclass
 class OtherArguments:
     plot: bool = field(
         default=True,
-        metadata={"help": "The output directory where the model predictions and checkpoints will be written."}
+        metadata={"help": "Whether to plot results."}
     )
     save_model: bool = field(
         default=True,
-        metadata={"help": "The output directory where the model predictions and checkpoints will be written."}
+        metadata={"help": "Whether to save the model parameters."}
     )
     save_results: bool = field(
         default=True,
-        metadata={"help": "The output directory where the model predictions and checkpoints will be written."}
+        metadata={"help": "Whether to save the prediction results."}
     )
     view_test: bool = field(
         default=True,
-        metadata={"help": "The output directory where the model predictions and checkpoints will be written."}
+        metadata={"help": "Whether to view a random test data."}
     )
 
 

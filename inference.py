@@ -18,15 +18,15 @@ class ModelArguments:
     )
     finetuned_model: str = field(
         default='2024-08-08_b_1_s_4232_l_512_w_(0.3, 1.0, 1.0, 1.0, 0.5, 0.5)_l_0.0001',
-        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
+        metadata={"help": "Name of the finetuned model."}
     )
     model_epoch: int = field(
         default=6,
-        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
+        metadata={"help": "Choose which epoch's parameters to use."}
     )
     database_path: str = field(
         default='./instance/AnnoApp.sqlite',
-        metadata={"help": "Path to pretrained model or model identifier from huggingface.co/models"}
+        metadata={"help": "Path to database of annotations."}
     )
     max_seq_length: int = field(
         default=512,
@@ -40,7 +40,7 @@ class ModelArguments:
 class OtherArguments:
     output_dir: str = field(
         default='./output',
-        metadata={"help": "The output directory where the model predictions and checkpoints will be written."}
+        metadata={"help": "The output directory for logs."}
     )
 
 def main():
