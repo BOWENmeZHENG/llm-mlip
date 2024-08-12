@@ -35,6 +35,10 @@ class ModelArguments:
             "than this will be truncated."
         },
     )
+    
+
+@dataclass
+class InferenceArguments:
     inference_text: str = field(
         default='./inference_examples.txt',
         metadata={"help": "text file for inference. Follow example of ./inference_examples.txt."}
@@ -46,10 +50,18 @@ class OtherArguments:
         default='./output',
         metadata={"help": "The output directory for logs."}
     )
+    show_infer: bool = field(
+        default=True,
+        metadata={"help": "Whether to show inferences."}
+    )
+    send_to_database: bool = field(
+        default=False,
+        metadata={"help": "Whether to send inferences to database."}
+    )
 
 def main():
     parser = HfArgumentParser((ModelArguments, OtherArguments))
-    model_args, other_args = parser.parse_args_into_dataclasses()
+    model_args, infer_args, other_args = parser.parse_args_into_dataclasses()
     os.makedirs(other_args.output_dir, exist_ok=True)
     logging.basicConfig(
         level=logging.INFO,
@@ -70,18 +82,20 @@ def main():
 
     # Annotate
     records = []
-    with open(model_args.inference_text, 'r') as file:
+    with open(infer_args.inference_text, 'r') as file:
         for line in file:
             records.append(line.strip())
 
     results = ut.inference_batch(records, model, tokenizerBERT, model_args.max_seq_length)
-    for result in results:
-        ut.show_pred(*result)
+    if other_args.show_infer:
+        for result in results:
+            ut.show_pred(*result)
 
     # Send annotation to database
-    CLASSES_inv = {value: key for key, value in CLASSES.items()}
-    data_AI = ut.result2data_batch(results, CLASSES_inv)
-    ut.insert_data(data_AI, model_args.database_path)
+    if other_args.send_to_database:
+        CLASSES_inv = {value: key for key, value in CLASSES.items()}
+        data_AI = ut.result2data_batch(results, CLASSES_inv)
+        ut.insert_data(data_AI, model_args.database_path)
 
 if __name__ == "__main__":
     main()
