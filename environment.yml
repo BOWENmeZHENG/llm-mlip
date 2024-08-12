@@ -11,4 +11,4 @@ dependencies:
   - sympy=1.12
   - flask=3.0.3
   - pip:
-    - highlight-text=0.2
+    - highlight-text==0.2
