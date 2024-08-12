@@ -35,6 +35,10 @@ class ModelArguments:
             "than this will be truncated."
         },
     )
+    inference_text: str = field(
+        default='./inference_examples.txt',
+        metadata={"help": "text file for inference. Follow example of ./inference_examples.txt."}
+    )
 
 @dataclass
 class OtherArguments:
@@ -66,7 +70,7 @@ def main():
 
     # Annotate
     records = []
-    with open('texts2annotate.txt', 'r') as file:
+    with open(model_args.inference_text, 'r') as file:
         for line in file:
             records.append(line.strip())
 

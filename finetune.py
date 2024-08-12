@@ -21,7 +21,7 @@ class ModelArguments:
     )
     database_path: str = field(
         default='./instance/AnnoApp.sqlite',
-        metadata={"help": "Path to database of annotations"}
+        metadata={"help": "Path to database of annotations."}
     )
 
 @dataclass
