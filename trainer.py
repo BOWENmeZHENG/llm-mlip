@@ -11,7 +11,7 @@ import json
 def train(model, tokenizer, record_list_train, record_list_test, classes, 
           batch_size, seed, max_length, class_weights: list, lr, n_epochs,
           plot=True, save_model=True, save_results=True):
-    folder = f'{date.today()}_b_{batch_size}_s_{seed}_l_{max_length}_w_{class_weights}_l_{lr}'
+    folder = f'{date.today()}_b_{batch_size}_l_{max_length}_w_{class_weights}_l_{lr}_s_{seed}'
     os.makedirs(f'saved_models/{folder}', exist_ok=True)
     data_batches, target_batches, att_mask_batches = ut.preprocess(record_list=record_list_train, classes=classes, tokenizer=tokenizer, 
                                                                    batch_size=batch_size, max_length=max_length, test=False)

@@ -1,20 +1,42 @@
 import pandas as pd
 import os
+import io
 import fnmatch
 import matplotlib.pyplot as plt
 import numpy as np
+import json
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
+from highlight_text import HighlightText
 
 @dataclass
 class ResultArguments:
-    # seeds_run: tuple = field(
-    #     default=None,
-    #     metadata={"help": "Same parameters under different seeds."}
-    # )
     stem: str = field(
         default=None,
+        metadata={"help": "Stem of model folder."}
+    )
+    # date: str = field(
+    #     default=None,
+    #     metadata={"help": "Date of model training."}
+    # )
+    # seed: str = field(
+    #     default=None,
+    #     metadata={"help": "Date of model training."}
+    # )
+    epoch: str = field(
+        default=None,
         metadata={"help": "Date of model training."}
+    )
+
+@dataclass
+class OtherArguments:
+    plot_results: bool = field(
+        default=True,
+        metadata={"help": "Whether to plot results."}
+    )
+    viz_test: bool = field(
+        default=False,
+        metadata={"help": "Whether to visualize annotation on test data."}
     )
 
 def get_folders_starting_with(path, start_name):
@@ -23,6 +45,13 @@ def get_folders_starting_with(path, start_name):
     # Filter only directories that start with the given name
     folders = [item for item in items if os.path.isdir(os.path.join(path, item)) and fnmatch.fnmatch(item, f'{start_name}*')]
     return folders
+
+def get_files_starting_with(path, start_name):
+    # List all items in the directory
+    items = os.listdir(path)
+    # Filter only directories that start with the given name
+    files = [item for item in items if os.path.isfile(os.path.join(path, item)) and fnmatch.fnmatch(item, f'{start_name}*')]
+    return files
 
 def mean_std(res_list, metric):
     vals = []
@@ -33,8 +62,8 @@ def mean_std(res_list, metric):
      
 
 def main():
-    parser = HfArgumentParser(ResultArguments)
-    result_args, *_ = parser.parse_args_into_dataclasses()
+    parser = HfArgumentParser((ResultArguments, OtherArguments))
+    result_args, other_args = parser.parse_args_into_dataclasses()
     folders = get_folders_starting_with('saved_models/', result_args.stem)
     results = []
     for f in folders:
@@ -52,43 +81,77 @@ def main():
     mean_train_f1, std_train_f1 = mean_std(results, 'train_f1')
     mean_test_f1, std_test_f1 = mean_std(results, 'test_f1')
     
-    fig, axes = plt.subplots(2, 2, sharex=True, figsize=(20, 16))
-    # fig.tight_layout()
+    if other_args.plot_results:
+        fig, axes = plt.subplots(2, 2, sharex=True, figsize=(20, 16))
 
-    axes[0, 0].errorbar(range(1, n_epochs + 1), mean_train_loss, yerr=std_train_loss, marker='o',
-                markersize=8, c='red', capsize=5, label='training')
-    axes[0, 0].legend(fontsize=22)
-    axes[0, 0].set_ylabel("loss", fontsize=22)
-    axes[0, 0].tick_params(labelsize=20)
+        axes[0, 0].errorbar(range(1, n_epochs + 1), mean_train_loss, yerr=std_train_loss, marker='o',
+                    markersize=8, c='red', capsize=5, label='training')
+        axes[0, 0].legend(fontsize=22)
+        axes[0, 0].set_ylabel("loss", fontsize=22)
+        axes[0, 0].tick_params(labelsize=20)
 
-    axes[0, 1].errorbar(range(1, n_epochs + 1), mean_train_precision, yerr=std_train_precision, marker='o',
-                markersize=8, c='blue', capsize=5, label='training')
-    axes[0, 1].errorbar(range(1, n_epochs + 1), mean_test_precision, yerr=std_test_precision, marker='o',
-                markersize=8, c='green', capsize=5, label='test')
-    axes[0, 1].legend(fontsize=22)
-    # axes[0, 1].set_xlabel("epoch", fontsize=22)
-    axes[0, 1].set_ylabel("precision", fontsize=22)
-    axes[0, 1].tick_params(labelsize=20)
+        axes[0, 1].errorbar(range(1, n_epochs + 1), mean_train_precision, yerr=std_train_precision, marker='o',
+                    markersize=8, c='blue', capsize=5, label='training')
+        axes[0, 1].errorbar(range(1, n_epochs + 1), mean_test_precision, yerr=std_test_precision, marker='o',
+                    markersize=8, c='green', capsize=5, label='test')
+        axes[0, 1].legend(fontsize=22)
+        axes[0, 1].set_ylabel("precision", fontsize=22)
+        axes[0, 1].tick_params(labelsize=20)
 
-    axes[1, 0].errorbar(range(1, n_epochs + 1), mean_train_recall, yerr=std_train_recall, marker='o',
-                markersize=8, c='blue', capsize=5, label='training')
-    axes[1, 0].errorbar(range(1, n_epochs + 1), mean_test_recall, yerr=std_test_recall, marker='o',
-                markersize=8, c='green', capsize=5, label='test')
-    axes[1, 0].legend(fontsize=22)
-    axes[1, 0].set_xlabel("epoch", fontsize=22)
-    axes[1, 0].set_ylabel("recall", fontsize=22)
-    axes[1, 0].tick_params(labelsize=20)
+        axes[1, 0].errorbar(range(1, n_epochs + 1), mean_train_recall, yerr=std_train_recall, marker='o',
+                    markersize=8, c='blue', capsize=5, label='training')
+        axes[1, 0].errorbar(range(1, n_epochs + 1), mean_test_recall, yerr=std_test_recall, marker='o',
+                    markersize=8, c='green', capsize=5, label='test')
+        axes[1, 0].legend(fontsize=22)
+        axes[1, 0].set_xlabel("epoch", fontsize=22)
+        axes[1, 0].set_ylabel("recall", fontsize=22)
+        axes[1, 0].tick_params(labelsize=20)
 
-    axes[1, 1].errorbar(range(1, n_epochs + 1), mean_train_f1, yerr=std_train_f1, marker='o',
-                markersize=8, c='blue', capsize=5, label='training')
-    axes[1, 1].errorbar(range(1, n_epochs + 1), mean_test_f1, yerr=std_test_f1, marker='o',
-                markersize=8, c='green', capsize=5, label='test')
-    axes[1, 1].legend(fontsize=22)
-    axes[1, 1].set_xlabel("epoch", fontsize=22)
-    axes[1, 1].set_ylabel("F1-score", fontsize=22)
-    axes[1, 1].tick_params(labelsize=20)
+        axes[1, 1].errorbar(range(1, n_epochs + 1), mean_train_f1, yerr=std_train_f1, marker='o',
+                    markersize=8, c='blue', capsize=5, label='training')
+        axes[1, 1].errorbar(range(1, n_epochs + 1), mean_test_f1, yerr=std_test_f1, marker='o',
+                    markersize=8, c='green', capsize=5, label='test')
+        axes[1, 1].legend(fontsize=22)
+        axes[1, 1].set_xlabel("epoch", fontsize=22)
+        axes[1, 1].set_ylabel("F1-score", fontsize=22)
+        axes[1, 1].tick_params(labelsize=20)
 
-    plt.show()
+        plt.show()
+
+    if other_args.viz_test:
+        folder = get_folders_starting_with('saved_models/', result_args.stem)[0]
+        stem_file = f'{folder}_e_{result_args.epoch}_'
+        files = get_files_starting_with(f'saved_models/{folder}', stem_file)
+        for file in files:
+            with open(f'saved_models/{folder}/{file}', encoding='utf-8') as f:
+                for jsonObj in f:
+                    record = json.loads(jsonObj)
+            # calculate accuracy
+            counts = 0
+            for ii in range(len(record['pred'])):
+                if record['pred'][ii] == record['labels'][ii]:
+                    counts += 1
+            accuracy = counts / len(record['pred'])
+
+            colors = ['black', 'red', 'blue', 'green', 'cyan', 'darkorange']
+            word_list_marked = ['<' + w + '>' for w in record['words']]
+            markers_labels = [{"color": colors[i]} for i in record['labels']]
+            markers_pred = [{"color": colors[i]} for i in record['pred']]
+            j = 0
+            for i in range(len(record['words'])):
+                if (i + 1) % 15 == 0:
+                    word_list_marked.insert(i + j, '\n')
+                    j += 1
+
+            fig, ax = plt.subplots(figsize=(12, 8))
+            ax.set_axis_off()
+            HighlightText(x=0., y=1, s='<O>, <MATERIAL>, <MLIP>, <PROPERTY>, <VALUE>, <APPLICATION>',
+              highlight_textprops=[{"color": c} for c in colors], ax=ax)
+            HighlightText(x=0., y=0.8, s=' '.join(word_list_marked),
+                        highlight_textprops=markers_pred, ax=ax)
+            plt.show()
+
+
 
 if __name__ == "__main__":
     main()

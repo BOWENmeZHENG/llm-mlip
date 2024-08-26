@@ -61,6 +61,10 @@ class TrainingArguments:
         default=3242,
         metadata={"help": "Random seed."}
     )
+    seed_shuffle: int = field(
+        default=56834,
+        metadata={"help": "Random seed."}
+    )
 
 @dataclass
 class OtherArguments:
@@ -102,11 +106,12 @@ def main():
     logging.info(f"Parameters {model_args}, {training_args}, {other_args}")
 
     # Set seed before initializing model.
-    ut.seed_everything(training_args.seed)
+    ut.seed_everything(training_args.seed_shuffle)
 
     # Get training data from database
     records = ut.get_data(model_args.database_path)
     record_list = ut.form_record_list(records)
+    random.shuffle(record_list)
     N_train = int(training_args.training_percentage * len(record_list))
     record_list_train = record_list[:N_train]
     record_list_test = record_list[N_train:]
@@ -114,6 +119,7 @@ def main():
     print(f'Number of test data: {len(record_list_test)}')
 
     # Load pretrained model
+    ut.seed_everything(training_args.seed)
     tokenizerBERT = BertTokenizer.from_pretrained(model_args.model_name, model_max_length=training_args.max_seq_length)
     modelBERT = BertForMaskedLM.from_pretrained(model_args.model_name)
     model = net.NERBERTModel(modelBERT.base_model, output_size=len(CLASSES)+1)
