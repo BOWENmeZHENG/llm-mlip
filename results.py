@@ -15,14 +15,6 @@ class ResultArguments:
         default=None,
         metadata={"help": "Stem of model folder."}
     )
-    # date: str = field(
-    #     default=None,
-    #     metadata={"help": "Date of model training."}
-    # )
-    # seed: str = field(
-    #     default=None,
-    #     metadata={"help": "Date of model training."}
-    # )
     epoch: str = field(
         default=None,
         metadata={"help": "Date of model training."}
@@ -31,6 +23,10 @@ class ResultArguments:
 @dataclass
 class OtherArguments:
     plot_results: bool = field(
+        default=True,
+        metadata={"help": "Whether to plot results."}
+    )
+    save_summary: bool = field(
         default=True,
         metadata={"help": "Whether to plot results."}
     )
@@ -80,6 +76,27 @@ def main():
     mean_test_recall, std_test_recall = mean_std(results, 'test_recall')
     mean_train_f1, std_train_f1 = mean_std(results, 'train_f1')
     mean_test_f1, std_test_f1 = mean_std(results, 'test_f1')
+    if other_args.save_summary:
+        mean_train_loss_np, std_train_loss_np = np.array(mean_train_loss), np.array(std_train_loss)
+        mean_train_accuracy_np, std_train_accuracy_np = np.array(mean_train_accuracy), np.array(std_train_accuracy)
+        mean_test_accuracy_np, std_test_accuracy_np = np.array(mean_test_accuracy), np.array(std_test_accuracy)
+        mean_train_precision_np, std_train_precision_np = np.array(mean_train_precision), np.array(std_train_precision)
+        mean_test_precision_np, std_test_precision_np = np.array(mean_test_precision), np.array(std_test_precision)
+        mean_train_recall_np, std_train_recall_np = np.array(mean_train_recall), np.array(std_train_recall)
+        mean_test_recall_np, std_test_recall_np = np.array(mean_test_recall), np.array(std_test_recall)
+        mean_train_f1_np, std_train_f1_np = np.array(mean_train_f1), np.array(std_train_f1)
+        mean_test_f1_np, std_test_f1_np = np.array(mean_test_f1), np.array(std_test_f1)
+        data = np.vstack((mean_train_loss_np, std_train_loss_np, 
+                          mean_train_accuracy_np, std_train_accuracy_np, mean_test_accuracy_np, std_test_accuracy_np, 
+                          mean_train_precision_np, std_train_precision_np, mean_test_precision_np, std_test_precision_np, 
+                          mean_train_recall_np, std_train_recall_np, mean_test_recall_np, std_test_recall_np,
+                          mean_train_f1_np, std_train_f1_np, mean_test_f1_np, std_test_f1_np)).T
+        data_df = pd.DataFrame(data, columns=['mean_train_loss', 'std_train_loss', 
+        'mean_train_accuracy', 'std_train_accuracy', 'mean_test_accuracy', 'std_test_accuracy', 
+        'mean_train_precision', 'std_train_precision', 'mean_test_precision', 'std_test_precision',
+        'mean_train_recall', 'std_train_recall', 'mean_test_recall', 'std_test_recall',
+        'mean_train_f1', 'std_train_f1', 'mean_test_f1', 'std_test_f1',])
+        data_df.to_csv(f'saved_models/results_{result_args.stem}.csv', index=False)
     
     if other_args.plot_results:
         fig, axes = plt.subplots(2, 2, sharex=True, figsize=(20, 16))
@@ -117,6 +134,7 @@ def main():
         axes[1, 1].tick_params(labelsize=20)
 
         plt.show()
+
 
     if other_args.viz_test:
         folder = get_folders_starting_with('saved_models/', result_args.stem)[0]
