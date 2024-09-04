@@ -46,9 +46,9 @@ def annotate(id):
         t = text['body']
         annotation = text['annotation'] # it's working
         word_list = split_para(t)
-        write_anno(f'annotate', word_list)
+        write_anno(f'annotate_{id}', word_list)
         
-        return render_template(f'mlip/annotate.html', text=word_list, annotation_exist=annotation, ID=id)
+        return render_template(f'mlip/annotate_{id}.html', text=word_list, annotation_exist=annotation, ID=id)
     
 
 def get_text(id, check_author=True):
