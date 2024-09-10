@@ -70,32 +70,40 @@ def main():
     mean_train_loss, std_train_loss = mean_std(results, 'train_loss')
     mean_train_accuracy, std_train_accuracy = mean_std(results, 'train_accuracy')
     mean_test_accuracy, std_test_accuracy = mean_std(results, 'test_accuracy')
+    mean_ood_accuracy, std_ood_accuracy = mean_std(results, 'ood_accuracy')
     mean_train_precision, std_train_precision = mean_std(results, 'train_precision')
     mean_test_precision, std_test_precision = mean_std(results, 'test_precision')
+    mean_ood_precision, std_ood_precision = mean_std(results, 'ood_precision')
     mean_train_recall, std_train_recall = mean_std(results, 'train_recall')
     mean_test_recall, std_test_recall = mean_std(results, 'test_recall')
+    mean_ood_recall, std_ood_recall = mean_std(results, 'ood_recall')
     mean_train_f1, std_train_f1 = mean_std(results, 'train_f1')
     mean_test_f1, std_test_f1 = mean_std(results, 'test_f1')
+    mean_ood_f1, std_ood_f1 = mean_std(results, 'ood_f1')
     if other_args.save_summary:
         mean_train_loss_np, std_train_loss_np = np.array(mean_train_loss), np.array(std_train_loss)
         mean_train_accuracy_np, std_train_accuracy_np = np.array(mean_train_accuracy), np.array(std_train_accuracy)
         mean_test_accuracy_np, std_test_accuracy_np = np.array(mean_test_accuracy), np.array(std_test_accuracy)
+        mean_ood_accuracy_np, std_test_ood_accuracy_np = np.array(mean_ood_accuracy), np.array(std_ood_accuracy)
         mean_train_precision_np, std_train_precision_np = np.array(mean_train_precision), np.array(std_train_precision)
         mean_test_precision_np, std_test_precision_np = np.array(mean_test_precision), np.array(std_test_precision)
+        mean_ood_precision_np, std_test_ood_precision_np = np.array(mean_ood_precision), np.array(std_ood_precision)
         mean_train_recall_np, std_train_recall_np = np.array(mean_train_recall), np.array(std_train_recall)
         mean_test_recall_np, std_test_recall_np = np.array(mean_test_recall), np.array(std_test_recall)
+        mean_ood_recall_np, std_test_ood_recall_np = np.array(mean_ood_recall), np.array(std_ood_recall)
         mean_train_f1_np, std_train_f1_np = np.array(mean_train_f1), np.array(std_train_f1)
         mean_test_f1_np, std_test_f1_np = np.array(mean_test_f1), np.array(std_test_f1)
+        mean_ood_f1_np, std_test_ood_f1_np = np.array(mean_ood_f1), np.array(std_ood_f1)
         data = np.vstack((mean_train_loss_np, std_train_loss_np, 
-                          mean_train_accuracy_np, std_train_accuracy_np, mean_test_accuracy_np, std_test_accuracy_np, 
-                          mean_train_precision_np, std_train_precision_np, mean_test_precision_np, std_test_precision_np, 
-                          mean_train_recall_np, std_train_recall_np, mean_test_recall_np, std_test_recall_np,
-                          mean_train_f1_np, std_train_f1_np, mean_test_f1_np, std_test_f1_np)).T
+                          mean_train_accuracy_np, std_train_accuracy_np, mean_test_accuracy_np, std_test_accuracy_np, mean_ood_accuracy_np, std_test_ood_accuracy_np,
+                          mean_train_precision_np, std_train_precision_np, mean_test_precision_np, std_test_precision_np, mean_ood_precision_np, std_test_ood_precision_np,
+                          mean_train_recall_np, std_train_recall_np, mean_test_recall_np, std_test_recall_np, mean_ood_recall_np, std_test_ood_recall_np,
+                          mean_train_f1_np, std_train_f1_np, mean_test_f1_np, std_test_f1_np, mean_ood_f1_np, std_test_ood_f1_np)).T
         data_df = pd.DataFrame(data, columns=['mean_train_loss', 'std_train_loss', 
-        'mean_train_accuracy', 'std_train_accuracy', 'mean_test_accuracy', 'std_test_accuracy', 
-        'mean_train_precision', 'std_train_precision', 'mean_test_precision', 'std_test_precision',
-        'mean_train_recall', 'std_train_recall', 'mean_test_recall', 'std_test_recall',
-        'mean_train_f1', 'std_train_f1', 'mean_test_f1', 'std_test_f1',])
+        'mean_train_accuracy', 'std_train_accuracy', 'mean_test_accuracy', 'std_test_accuracy', 'mean_ood_accuracy', 'std_ood_accuracy', 
+        'mean_train_precision', 'std_train_precision', 'mean_test_precision', 'std_test_precision', 'mean_ood_precision', 'std_ood_precision',
+        'mean_train_recall', 'std_train_recall', 'mean_test_recall', 'std_test_recall', 'mean_ood_recall', 'std_ood_recall',
+        'mean_train_f1', 'std_train_f1', 'mean_test_f1', 'std_test_f1', 'mean_ood_f1', 'std_test_ood_f1'])
         data_df.to_csv(f'saved_models/results_{result_args.stem}.csv', index=False)
     
     if other_args.plot_results:
@@ -111,6 +119,8 @@ def main():
                     markersize=8, c='blue', capsize=5, label='training')
         axes[0, 1].errorbar(range(1, n_epochs + 1), mean_test_precision, yerr=std_test_precision, marker='o',
                     markersize=8, c='green', capsize=5, label='test')
+        axes[0, 1].errorbar(range(1, n_epochs + 1), mean_ood_precision, yerr=std_ood_precision, marker='o',
+                    markersize=8, c='magenta', capsize=5, label='OOD')
         axes[0, 1].legend(fontsize=22)
         axes[0, 1].set_ylabel("precision", fontsize=22)
         axes[0, 1].tick_params(labelsize=20)
@@ -119,6 +129,8 @@ def main():
                     markersize=8, c='blue', capsize=5, label='training')
         axes[1, 0].errorbar(range(1, n_epochs + 1), mean_test_recall, yerr=std_test_recall, marker='o',
                     markersize=8, c='green', capsize=5, label='test')
+        axes[1, 0].errorbar(range(1, n_epochs + 1), mean_ood_recall, yerr=std_ood_recall, marker='o',
+                    markersize=8, c='magenta', capsize=5, label='OOD')
         axes[1, 0].legend(fontsize=22)
         axes[1, 0].set_xlabel("epoch", fontsize=22)
         axes[1, 0].set_ylabel("recall", fontsize=22)
@@ -128,6 +140,8 @@ def main():
                     markersize=8, c='blue', capsize=5, label='training')
         axes[1, 1].errorbar(range(1, n_epochs + 1), mean_test_f1, yerr=std_test_f1, marker='o',
                     markersize=8, c='green', capsize=5, label='test')
+        axes[1, 1].errorbar(range(1, n_epochs + 1), mean_ood_f1, yerr=std_ood_f1, marker='o',
+                    markersize=8, c='magenta', capsize=5, label='OOD')
         axes[1, 1].legend(fontsize=22)
         axes[1, 1].set_xlabel("epoch", fontsize=22)
         axes[1, 1].set_ylabel("F1-score", fontsize=22)
